@@ -1,23 +1,37 @@
 import ReactMarkdown from 'react-markdown';
+import Image from 'next/image';
 
 import PostHeader from "./post-header";
 import classes from './post-content.module.css';
 
-const DUMMY_POST = {
-    title: 'Getting Started With NexJS', 
-    image: 'getting-started-nextjs.png', 
-    slug: 'getting-started-with-nextjs', 
-    date: '2022-02-23', 
-    content: '# This is a first post'
-};
+function PostContent(props) {
+    const post = props.post;
+    const imagePath = `/images/posts/${post.slug}/${post.image}`;
 
-function PostContent() {
-    const imagePath = `/images/posts/${DUMMY_POST.slug}/${DUMMY_POST.image}`;
+    const customRenderers = {
+        p(paragraph) {
+            const { node } = paragraph;
+            if(node.children[0].tagName === 'img') {
+                const image = node.children[0];
+                return (
+                    <div className={classes.image}>
+                      < Image
+                        src={`/images/posts/${post.slug}/${image.properties.src}`}
+                        alt={'image.alt'}
+                        width={600}
+                        height={300}
+                      />
+                    </div>
+                  );
+            }
+            return <p>{paragraph.children}</p>;
+        }
+    };
 
     return <article className={classes.content}>
-        <PostHeader title={DUMMY_POST.title} image={imagePath}/>
-        <ReactMarkdown>
-            {DUMMY_POST.content}
+        <PostHeader title={post.title} image={imagePath}/>
+        <ReactMarkdown components={customRenderers}>
+            {post.content}
         </ReactMarkdown>
     </article>
 }
