@@ -34,6 +34,6 @@ export async function getStaticPaths() {
     const slugs = postFilesNames.map((fileName) => fileName.replace(/\.md$/, '')); //remove file extension);
     return {
         paths: slugs.map(slug => ({params: {slug: slug}})),
-        fallback: 'blocking'
+        fallback: false
     }
 }

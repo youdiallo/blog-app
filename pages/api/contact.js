@@ -27,8 +27,9 @@ async function handler(req, res) {
         console.log(newMessage);
 
         let mongoClient;
+        console.log(mongodbConnectString);
         try {
-            mongoClient = await MongoClient.connect('mongodb+srv://youdiallo:zaUTehkFu5lnb5HO@cluster0.db97nxc.mongodb.net/?retryWrites=true&w=majority');
+            mongoClient = await MongoClient.connect(mongodbConnectString);
         } catch(error){
             console.log(error);
             res.status(500).json({
@@ -36,7 +37,8 @@ async function handler(req, res) {
             });
             return;
         }
-        const db = mongoClient.db('blog-app');
+
+        const db = mongoClient.db(process.env.mongodb_database);
         try {
             const result = db.collection('messages').insertOne(newMessage);
             newMessage.id = result.insertedId;
